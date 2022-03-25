@@ -1,0 +1,26 @@
+<LoginScreen>:
+    MDTextField:
+        id: username
+        text: 'Vasya'
+        hint_text: "username"
+        pos_hint: {"center_x": 0.5, "center_y":0.7}
+        size_hint: (0.5, 0.1)
+
+    MDTextField:
+        id: password
+        text: 'Vasya'
+        hint_text: "password"
+        pos_hint: {"center_x": 0.5, "center_y":0.6}
+        size_hint: (0.5, 0.1)
+    MDRectangleFlatButton:
+        text: "login"
+        theme_text_color: "Custom"
+        text_color: 0, 0, 1, 1
+        pos_hint: {"center_x": 0.3, "center_y": 0.5}
+        on_press: self.parent.login()
+    MDRectangleFlatButton:
+        text: "Register"
+        theme_text_color: "Custom"
+        text_color: 0, 0, 1, 1
+        pos_hint: {"center_x": 0.5, "center_y": 0.4}
+        on_press: root.manager.current = "register"

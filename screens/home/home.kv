@@ -1,0 +1,80 @@
+#:include components/sidebar.kv
+#:import IRightBody kivymd.uix.list.IRightBody
+<HomeScreen>:
+    MDToolbar:
+        pos_hint: {"top": 1}
+        size_hint: (1, 0.1)
+        #md_bg_color: app.theme_cls.primary_color
+        left_action_items: [['menu', lambda x: sidebar.set_state("open")]]
+        right_action_items: [['eye-refresh', lambda x: root.load_posts()]]
+    ScrollView:
+        pos_hint: {"top": 0.9}
+        MDList:
+            spacing: "12dp"
+            padding: "12dp"
+            id:posts
+    MDFloatingActionButton:
+        icon: "pencil"
+        md_bg_color: app.theme_cls.primary_color
+        pos_hint: {"center_x": 0.9, "center_y": 0.1}
+        on_press: self.parent.open_dialog()
+    
+    SideBar:
+        id: sidebar
+
+<Post>:
+    size_hint_y: None
+    height: "86dp"
+    padding: "4dp"
+    radius: 12
+    elevation: 4
+    on_release: self.show_full_post()
+
+    FitImage:
+        source: root.avatar
+        radius: root.radius
+        size_hint_x: None
+        width: root.height
+    
+    MDBoxLayout:
+        orientation: "vertical"
+        adaptive_height: True
+        spacing: "6dp"
+        padding: "12dp", 0, 0, 0
+        pos_hint: {"center_y": .5}
+
+        MDLabel:
+            text: root.author_name
+            font_style: "Subtitle1"
+            bold: True
+            adaptive_height: True    
+
+        MDLabel:
+            text: root.text
+            adaptive_height: True
+            max_height: "5dp"
+            shorten: True
+
+    IconRightWidget:
+        icon: 'delete-empty' if app.user_data['id'] == root.author_id else 'thumb-up'
+        on_release: root.delete_post_animate() if app.user_data['id'] == root.author_id else root.like_post()
+
+    LikesCountLabel:
+        id: likes_count
+        text: root.likes_count
+
+    IconRightWidget:
+        icon: 'account-eye'
+        on_release: root.open_profile(root.author_id)
+
+<LikesCountLabel@MDLabel+IRightBody>:
+    text: '56'
+    adaptive_size: True
+    pos_hint:{'center_y':0.5}
+    canvas.before:
+        Color:
+            rgba: .5, .5, .5, 1
+        Line:
+            width: 2
+            rectangle: self.x, self.y, self.width, self.height
+        

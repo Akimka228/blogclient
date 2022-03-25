@@ -1,0 +1,27 @@
+<SideBar>:
+    id: sidebar
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: '8dp'
+        padding: '8dp'
+        AsyncImage:
+            id: avatar
+            source: 'https://www.gravatar.com/avatar/7AA1E4B788B85AE03200R6EE2BDADE9E3?d=identicon&s=256' 
+        MDLabel:
+            id: username
+            text: 'username'
+            bold: True
+            adaptive_height: True
+        MDLabel:
+            text: 'e-mail'
+            adaptive_height: True
+        ScrollView:
+            MDList:
+                OneLineIconListItem:
+                    text: "Profile"
+                    IconLeftWidget:
+                        icon: "account"
+                OneLineIconListItem:
+                    text: "Logout"
+                    IconLeftWidget:
+                        icon: "logout"

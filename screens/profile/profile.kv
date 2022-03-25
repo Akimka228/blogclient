@@ -1,0 +1,43 @@
+#:import effect kivy.uix.effectwidget.EffectWidget
+#:import HorizontalBlurEffect kivy.uix.effectwidget.HorizontalBlurEffect
+#:import VerticalBlurEffect kivy.uix.effectwidget.VerticalBlurEffect
+#: import MyToolBar screens.profile.profile.MyToolBar
+
+<ProfileScreen>:
+    MDSliverAppbar:
+        background_color: get_color_from_hex("2d4a50")
+        toolbar_cls: MyToolBar()
+        MDSliverAppbarHeader:
+            MDRelativeLayout:
+                EffectWidget:
+                    effects:(HorizontalBlurEffect(size=15),VerticalBlurEffect(size=15))
+                    FitImage:
+                        id: avatar_bg
+                        source: 'https://www.gravatar.com/avatar/7AA1E4B788B85AE03200R6EE2BDADE9E3?d=identicon&s=256'
+                FitImage:
+                    id: rounded_avatar
+                    size_hint: None, None
+                    size: "100dp", "100dp"
+                    source: 'https://www.gravatar.com/avatar/7AA1E4B788B85AE03200R6EE2BDADE9E3?d=identicon&s=256'
+                    radius: [self.height / 2,]
+                    pos_hint: {"center_x": .3, "center_y": .5}
+                    mipmap: True
+                
+                MDLabel:
+                    id: username
+                    size_hint: None, None
+                    pos_hint: {"center_x": .6, "center_y": .6}
+                    bold: True
+                    font_style: "H3"
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1
+                        
+                    
+
+        MDSliverAppbarContent:
+            id: posts
+            orientation: "vertical"
+            padding: "12dp"
+            spacing: "12dp"
+            adaptive_height: True
+            
