@@ -12,11 +12,12 @@ from kivymd.uix.list import ThreeLineAvatarListItem, ImageLeftWidget, IconRightW
     ThreeLineAvatarIconListItem
 from kivymd.uix.snackbar import Snackbar
 from kivymd.uix.textfield import MDTextField
-from kivy.properties import NumericProperty, StringProperty
+from kivy.properties import NumericProperty, StringProperty, BooleanProperty
 from kivy.storage.jsonstore import JsonStore
 from kivymd.uix.card import MDCardSwipeFrontBox, MDCardSwipe, MDCard
 from kivy.animation import Animation
 from kivymd.uix.behaviors import RoundedRectangularElevationBehavior
+from kivymd.uix.button import MDFillRoundFlatIconButton
 
 
 import components
@@ -26,6 +27,7 @@ class HomeScreen(Screen):
     dialog = None
     current_user_id = None
     current_username = None
+    page = 0
 
     def on_pre_enter(self):
         self.load_posts()
@@ -36,7 +38,9 @@ class HomeScreen(Screen):
     def show_posts(self, *args):
         posts = json.loads(args[1])
         scroll_list = self.ids.posts
-        scroll_list.clear_widgets()
+        #scroll_list.clear_widgets()
+        if scroll_list.children:
+            scroll_list.remove_widget(scroll_list.children[0])
         for post in posts:
             post_ = Post(id=post['id'],
                          author_name=post['author']['username'],
@@ -44,11 +48,20 @@ class HomeScreen(Screen):
                          text=post['text'],
                          likes_count = str(post['likes_count']),
                          avatar=post['author']['avatar'],
+                         already_liked=post['already_liked']
                          )
-            scroll_list.add_widget(post_)
+            if post_.author_id == MDApp.get_running_app().user_data["id"]:
+                post_.add_widget(IconRightWidget(icon='delete', on_release = post_.delete_post_animate,))
 
-    def load_posts(self):
-        UrlRequest(f'http://localhost:5000/api/posts',
+            scroll_list.add_widget(post_)
+        scroll_list.add_widget(MDFillRoundFlatIconButton(text = 'Load More', pos_hint = {'center_x':0.5}, icon='download-multiple', on_release = self.load_posts))
+        print(scroll_list.children)
+        
+        
+
+    def load_posts(self, *args):
+        self.page += 1
+        UrlRequest(f'http://localhost:5000/api/posts?user_id={MDApp.get_running_app().user_data["id"]}&page={self.page}&qty=4',
                    on_success=self.show_posts)
 
     def on_success_posting(self, *args):
@@ -99,15 +112,16 @@ class Post(MDCard, RoundedRectangularElevationBehavior):
     author_id = NumericProperty()
     avatar = StringProperty()
     likes_count = StringProperty()
+    already_liked = BooleanProperty()
 
     def show_full_post(self):
         dialog = MDDialog(
             title="Post",
-            text=f"[color=#000]{self.tertiary_text}[/color]"
+            text=f"[color=#000]{self.text}[/color]"
         )
         dialog.open()
 
-    def delete_post_animate(self):
+    def delete_post_animate(self, *args):
         anim = Animation(x=1000, duration=0.2)
         anim.bind(on_complete=self.delete_post)
         anim.start(self)

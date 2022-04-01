@@ -9,10 +9,13 @@
         right_action_items: [['eye-refresh', lambda x: root.load_posts()]]
     ScrollView:
         pos_hint: {"top": 0.9}
-        MDList:
-            spacing: "12dp"
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: self.minimum_height
             padding: "12dp"
-            id:posts
+            spacing: "12dp"
+            id: posts
     MDFloatingActionButton:
         icon: "pencil"
         md_bg_color: app.theme_cls.primary_color
@@ -29,6 +32,7 @@
     radius: 12
     elevation: 4
     on_release: self.show_full_post()
+
 
     FitImage:
         source: root.avatar
@@ -56,8 +60,11 @@
             shorten: True
 
     IconRightWidget:
-        icon: 'delete-empty' if app.user_data['id'] == root.author_id else 'thumb-up'
-        on_release: root.delete_post_animate() if app.user_data['id'] == root.author_id else root.like_post()
+        icon: 'thumb-up' if root.already_liked else 'thumb-up-outline'
+        on_release: 
+            root.like_post()
+            self.icon = 'thumb-up' if self.icon == 'thumb-up-outline' else 'thumb-up-outline'
+
 
     LikesCountLabel:
         id: likes_count
@@ -71,10 +78,3 @@
     text: '56'
     adaptive_size: True
     pos_hint:{'center_y':0.5}
-    canvas.before:
-        Color:
-            rgba: .5, .5, .5, 1
-        Line:
-            width: 2
-            rectangle: self.x, self.y, self.width, self.height
-        
